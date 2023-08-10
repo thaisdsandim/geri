@@ -8,7 +8,9 @@
       <el-col class="name mb-10">Geri</el-col>
     </el-row>
     <el-row class="center-row">
-      <el-col><el-button type="primary" class="login mb-10" @click="login">ENTRAR</el-button></el-col>
+        <el-col>
+          <el-button type="primary" class="login mb-10" @click="login">ENTRAR</el-button>
+        </el-col>
       <el-col><el-button class="register" @click="register">CADASTRAR</el-button></el-col>
     </el-row>
   </div>
@@ -16,12 +18,15 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import { googleAuthCodeLogin } from "vue3-google-login"
 
 const router = useRouter();
 
 const login = () => {
-  router.push('/entrar');
-};
+  googleAuthCodeLogin().then((response) => {
+    console.log("Handle the response", response)
+  })
+}
 
 const register = () => {
   router.push('/cadastrar');

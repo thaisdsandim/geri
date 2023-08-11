@@ -25,6 +25,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    exclude: ['vue3-google-login']
+    exclude: ['vue3-google-login, axios']
   }
 })

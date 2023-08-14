@@ -7,7 +7,7 @@
       :ellipsis="false"
       @select="handleSelect"
     >
-      <el-menu-item index="0">
+      <el-menu-item index="1-1">
         <div class="logo-container">
           <img src="../assets/geri.png" alt="Logo" class="logo">
         </div>
@@ -63,16 +63,13 @@ watch(activeIndex, (newValue) => {
 .flex-grow {
   flex-grow: 1;
 }
-
 .dashboard {
   margin-left: 10px;
   margin-right: 10px;
 }
-
 .logo-container {
   max-height: 10vh;
 }
-
 .logo {
   max-height: 10vh;
 }

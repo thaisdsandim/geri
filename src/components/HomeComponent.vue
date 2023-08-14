@@ -98,7 +98,7 @@ const callback = async (response) => {
     const apiResponse = await axios.post(`${URL}/users/sign_in`, data);
 
     if (apiResponse.status === 200) {
-      authStore.setUser(response);
+      authStore.setUser(apiResponse.data);
       ElMessage({
         showClose: true,
         message: 'Usuário logado com sucesso!',

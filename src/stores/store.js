@@ -12,8 +12,9 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     setUser(user) {
       this.user = user;
+      this.unit_id = user.unit_id;
       this.email = user.email;
-      this.token = user.authentication_token;
+      this.authentication_token = user.authentication_token;
       this.isAuthenticated = true;
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('isAuthenticated', 'true');
@@ -21,7 +22,8 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.user = null;
       this.email = null;
-      this.token = null;
+      this.unit_id = null;
+      this.authentication_token = null;
       this.isAuthenticated = false;
       localStorage.removeItem('user');
       localStorage.removeItem('isAuthenticated');

@@ -16,6 +16,8 @@ import { RouterView } from 'vue-router'
   --el-color-primary-light-8:#3d2a58;
   --el-color-primary-light-9:#342944;
   --el-color-primary-dark-2:#9e5ef8;
+  margin: 0;
+  padding: 0;
 }
 .mb-10 {
   margin-bottom: 10px;

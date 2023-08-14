@@ -1,6 +1,9 @@
 <template>
-  <div></div>
+  Painel
 </template>
 
 <script setup>
 </script>
+
+<style>
+</style>

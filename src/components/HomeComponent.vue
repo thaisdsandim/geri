@@ -20,7 +20,7 @@
 
     <el-dialog v-model="isRegisterVisible" title="Cadastre-se no Geri" class="dialog">
       Deixe seu contato que retornaremos com informações sobre planos e valores:
-      <el-form @submit.prevent="validateForm" class="mt-20">
+      <el-form label-position="top" @submit.prevent="validateForm" class="mt-20">
         <el-form-item label="Nome">
           <el-input type="name" v-model="register.from_name" placeholder="Nome Completo" required/>
         </el-form-item>
@@ -105,9 +105,7 @@ const callback = async (response) => {
         type: 'success',
       });
       isLoginVisible.value = false;
-      setTimeout(() => {
-        router.push(`/dashboard`);
-      }, 1000);
+      router.push(`/dashboard`);
     } else {
       ElMessage({
         showClose: true,
@@ -193,6 +191,7 @@ const submitForm = (templateParams) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 80vw;
 }
 .mt-20 {
   margin-top: 20px;

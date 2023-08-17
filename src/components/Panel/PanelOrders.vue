@@ -39,6 +39,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '../../stores/store';
+import {
+  ElRow,
+  ElCol,
+  ElStatistic,
+  ElMessage
+} from 'element-plus';
 import axios from 'axios';
 import URL from '../../config/apiConfig';
 
@@ -57,9 +63,12 @@ const monthlySales = ref(0);
 const monthlyOrderCount = ref(0);
 
 const calculateDailySales = (orders) => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date();
+  today.setUTCHours(today.getUTCHours() - 4);
+  const todayISOString = today.toISOString().split('T')[0];
+  
   const dailySalesSum = orders
-    .filter(order => order.delivery_date === today)
+    .filter(order => order.delivery_date === todayISOString)
     .reduce((sum, order) => sum + order.amount, 0);
   dailySales.value = dailySalesSum;
 };
@@ -99,17 +108,24 @@ const formatCurrency = (value) => {
 onMounted(() => {
   axios.get(url, { headers })
     .then(response => {
-      console.log(response.data);
       if (response.data) {
         calculateDailySales(response.data);
         calculateMonthlySales(response.data);
         calculateMonthlyOrderCount(response.data);
       } else {
-        console.error('API response data is missing or in an unexpected format.');
+        ElMessage({
+          showClose: true,
+          message: response,
+          type: 'error',
+        });
       }
     })
     .catch(error => {
-      console.error('Erro:', error);
+      ElMessage({
+        showClose: true,
+        message: error,
+        type: 'error',
+      });
     });
 });
 </script>

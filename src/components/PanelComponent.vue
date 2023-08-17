@@ -1,10 +1,10 @@
 <template>
   <PanelOrders/>
-  <OrdersGraphic/>
+  <OrdersList/>
 </template>
 
 <script setup>
-import OrdersGraphic from './Panel/OrdersGraphic.vue';
+import OrdersList from './Panel/OrdersList.vue';
 import PanelOrders from './Panel/PanelOrders.vue';
 </script>
 

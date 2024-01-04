@@ -3,8 +3,5 @@
 </template>
 
 <script setup>
-import HomeComponent from '../components/HomeComponent.vue'
+import HomeComponent from '../components/Home/HomeComponent.vue';
 </script>
-
-<style>
-</style>

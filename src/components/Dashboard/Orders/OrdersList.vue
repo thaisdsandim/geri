@@ -27,8 +27,8 @@
 import { onMounted, ref } from 'vue';
 import { ElCard, ElMessage } from 'element-plus';
 import axios from 'axios';
-import URL from '../../config/apiConfig';
-import { useAuthStore } from '../../stores/store';
+import URL from '../../../config/apiConfig';
+import { useAuthStore } from '../../../stores/store';
 
 const authStore = useAuthStore();
 const token = authStore.user.authentication_token;

@@ -18,7 +18,7 @@
         <el-menu-item index="1-1">Página Inicial</el-menu-item>
         <el-menu-item index="1-2">Pedidos</el-menu-item>
         <el-menu-item index="1-3">Clientes</el-menu-item>
-        <el-menu-item index="1-4">Configurações</el-menu-item>
+        <el-menu-item index="1-4">Catálogo</el-menu-item>
       </el-sub-menu>
     </el-menu>
     <div>
@@ -28,32 +28,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import ClientsComponent from './ClientsComponent.vue';
-import ConfigsComponent from './ConfigsComponent.vue';
-import OrdersComponent from './OrdersComponent.vue';
-import PanelComponent from './PanelComponent.vue';
-import {
-  ElMenu,
-  ElMenuItem,
-  ElSubMenu
-} from 'element-plus';
+import { ref, watch } from 'vue';
+import { ElMenu, ElMenuItem, ElSubMenu } from 'element-plus';
+import DashboardComponent from './Dashboard/DashboardComponent.vue';
+import OrdersComponent from './Sales/OrdersComponent.vue';
+import ClientsComponent from './Sales/ClientsComponent.vue';
+import CatalogComponent from './Sales/CatalogComponent.vue';
 
 const activeIndex = ref('1-1');
-const currentComponent = ref(PanelComponent);
+const currentComponent = ref(DashboardComponent);
 
 const handleSelect = (index) => {
   activeIndex.value = index;
 };
 
 const componentMap = {
-  '1-1': PanelComponent,
+  '1-1': DashboardComponent,
   '1-2': OrdersComponent,
   '1-3': ClientsComponent,
-  '1-4': ConfigsComponent
+  '1-4': CatalogComponent
 };
 
-import { watch } from 'vue';
 watch(activeIndex, (newValue) => {
   currentComponent.value = componentMap[newValue];
 });

@@ -38,7 +38,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useAuthStore } from '../../stores/store';
+import { useAuthStore } from '../../../stores/store';
 import {
   ElRow,
   ElCol,
@@ -46,7 +46,7 @@ import {
   ElMessage
 } from 'element-plus';
 import axios from 'axios';
-import URL from '../../config/apiConfig';
+import URL from '../../../config/apiConfig';
 
 const authStore = useAuthStore();
 const token = authStore.user.authentication_token;

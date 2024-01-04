@@ -4,7 +4,7 @@
 </template>
 
 <script setup>
-import OrdersList from './Panel/OrdersList.vue';
+import OrdersList from './Orders/OrdersList.vue';
 import PanelOrders from './Panel/PanelOrders.vue';
 </script>
 

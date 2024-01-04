@@ -1,25 +1,32 @@
 <template>
-  <div class="card-container">
-    <el-card v-for="order in dailySales" :key="order.id" class="order-card">
-      <div class="order-header">
-        <span>PEDIDO N.º {{ order.id }} - {{ order.costumer.name.toUpperCase() }}</span>
-      </div>
-      <div>
-        <ul>
-          <li v-for="(item, index) in order.items" :key="index" class="itens">
-            <p>
-              {{ item.quantity }} 
-              {{ item.category === 'Bolo' ? 'kg' : item.category === 'Docinhos' ? 'un.' : '' }}
-              de {{ item.category }} de {{ item.flavour }}
-            </p>
-            <p>{{ item.comments }}</p>
-          </li>
-        </ul>
-      </div>
-      <p><b>Hora de Entrega: </b>{{ formatDeliveryTime(order.delivery_hour) }}</p>
-      <p><b>Local de Entrega: </b>{{ order.delivery_place }}</p>
-       <p class="mt-10"><b>{{ formatCurrency(order.amount) }}</b></p>
-    </el-card>
+  <div>
+    <div class="card-container">
+      <el-card v-for="order in dailySales" :key="order.id" class="order-card" shadow="never">
+        <template #header>
+          <div class="order-header">
+            <span>PEDIDO N.º {{ order.id }}</span>
+            <span>{{ order.costumer.name.toUpperCase() }}</span>
+          </div>
+        </template>
+        <div>
+          <ul>
+            <li v-for="(item, index) in order.items" :key="index" class="itens">
+              <p>
+                {{ item.quantity }} 
+                {{ item.category === 'Bolo' ? 'kg' : item.category === 'Docinhos' ? 'un.' : '' }}
+                de {{ item.category }} de {{ item.flavour }}
+              </p>
+              <p class="comments">{{ item.comments }}</p>
+            </li>
+          </ul>
+        </div>
+        <div class="order-footer">
+          <p><b>Hora de Entrega: </b>{{ formatDeliveryTime(order.delivery_hour) }}</p>
+          <p class="mt-10"><b>Local de Entrega: </b>{{ order.delivery_place }}</p>
+          <p class="mt-20 total"><b>{{ formatCurrency(order.amount) }}</b></p>
+        </div>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -101,15 +108,31 @@ onMounted(() => {
   align-items: center;
 }
 .order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 16px;
   font-weight: bold;
 }
+.order-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .itens {
-  margin: 10px 0 10px 0;
+  margin: 0px 0 20px 0;
   list-style: none;
 }
 .mt-10 {
   margin-top: 10px;
+}
+.comments {
+  font-size: 14px;
+  color: gray;
+  font-style: italic;
+}
+.total {
+  font-size: 20px;
 }
 @media (max-width: 667px) {
   .order-card {

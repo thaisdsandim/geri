@@ -1,9 +1,10 @@
 <template>
   <div class="mt-20 orders">
-    <div>
-      <el-date-picker v-model="selectedDate" type="date" placeholder="Selecione a data" @change="loadOrders" format="DD/MM/YYYY"></el-date-picker>
+    <div class="filters">
+      <el-date-picker v-model="selectedDate" type="date" placeholder="Selecione a data para filtrar..." @change="loadOrders" format="DD/MM/YYYY"></el-date-picker>
+      <el-input v-model="customerFilter" placeholder="Digite o nome do cliente para filtrar..." @input="filterOrdersByCustomer" class="name-filter"></el-input>
     </div>
-    <div class="card-container">
+    <div class="card-container mt-10">
       <el-card v-for="order in dailySales" :key="order.id" class="order-card" shadow="never">
         <template #header>
           <div class="order-header">
@@ -35,7 +36,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { ElCard, ElMessage, ElDatePicker } from 'element-plus';
+import { ElCard, ElMessage, ElDatePicker, ElInput } from 'element-plus';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
@@ -54,6 +55,7 @@ const dailySales = ref(0);
 const dateISO = new Date();
 dateISO.setUTCHours(dateISO.getUTCHours() - 4);
 const selectedDate = ref(dateISO.toISOString().split('T')[0]);
+const customerFilter = ref('');
 
 const formatDeliveryTime = (deliveryHour) => {
   const date = new Date(deliveryHour);
@@ -66,13 +68,21 @@ const formatCurrency = (value) => {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
+const filterOrdersByCustomer = () => {
+  loadOrders();
+};
+
 const filterDailySales = (orders) => {
   const selectedDateISO = new Date(selectedDate.value).toISOString().split('T')[0];
-  const dailySalesSum = orders.filter(order => {
+  const filteredOrders = orders.filter(order => {
     const orderDateISO = new Date(order.delivery_date).toISOString().split('T')[0];
-    return orderDateISO === selectedDateISO;
+    const dateCondition = orderDateISO === selectedDateISO;
+
+    const customerCondition = order.costumer.name.toLowerCase().includes(customerFilter.value.toLowerCase());
+
+    return dateCondition && customerCondition;
   });
-  dailySales.value = dailySalesSum;
+  dailySales.value = filteredOrders;
 };
 
 const loadOrders = () => {
@@ -108,6 +118,13 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.filters {
+  display: flex;
+  align-items: center;
+}
+.name-filter {
+  margin-left: 15px;
 }
 .card-container {
   display: flex;

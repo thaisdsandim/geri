@@ -7,8 +7,9 @@
     <div class="card-container mt-10">
       <el-card v-for="order in dailySales" :key="order.id" class="order-card" shadow="never">
         <template #header>
-          <div class="order-client">
-            <p>{{ order.costumer.name.toUpperCase() }}</p>
+          <div class="order-header">
+            <p>PEDIDO N.º {{ order.id }}</p>
+            <p class="name-filter">{{ order.costumer.name.toUpperCase() }}</p>
           </div>
           <div class="order-header">
             <p class="mt-20"><b>{{ formatDate(order.delivery_date) }}</b></p>
@@ -21,7 +22,7 @@
               <p>
                 {{ item.quantity }} 
                 {{ item.category === 'Bolo' ? 'kg' : item.category === 'Docinhos' ? 'un.' : '' }}
-                de {{ item.category }} de {{ item.flavour }}
+                de {{ item.category }} {{ item.flavour }}
               </p>
               <p class="comments">{{ item.comments }}</p>
             </li>
@@ -54,10 +55,10 @@ const headers = {
 
 const url = `${URL}/units/${unitId}/orders/list_orders`;
 
-const dailySales = ref(0);
+const dailySales = ref([]);
 const dateISO = new Date();
 dateISO.setUTCHours(dateISO.getUTCHours() - 4);
-const selectedDate = ref(dateISO.toISOString().split('T')[0]);
+const selectedDate = ref(null);
 const customerFilter = ref('');
 
 const formatDeliveryTime = (deliveryHour) => {
@@ -82,15 +83,17 @@ const filterOrdersByCustomer = () => {
 };
 
 const filterDailySales = (orders) => {
-  const selectedDateISO = new Date(selectedDate.value).toISOString().split('T')[0];
+  const selectedDateISO = selectedDate.value ? new Date(selectedDate.value).toISOString().split('T')[0] : null;
+
   const filteredOrders = orders.filter(order => {
     const orderDateISO = new Date(order.delivery_date).toISOString().split('T')[0];
-    const dateCondition = orderDateISO === selectedDateISO;
+    const dateCondition = selectedDateISO ? orderDateISO === selectedDateISO : true;
 
     const customerCondition = order.costumer.name.toLowerCase().includes(customerFilter.value.toLowerCase());
 
     return dateCondition && customerCondition;
   });
+
   dailySales.value = filteredOrders;
 };
 
@@ -98,8 +101,8 @@ const loadOrders = () => {
   axios.get(url, { headers })
     .then(response => {
       if (response.data) {
+        response.data.sort((a, b) => new Date(b.delivery_date) - new Date(a.delivery_date));
         filterDailySales(response.data);
-        console.log(response.data);
       } else {
         ElMessage({
           showClose: true,
@@ -152,12 +155,6 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
-}
-.order-client {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 16px;
   font-weight: bold;
 }
 .order-footer {
@@ -176,9 +173,6 @@ onMounted(() => {
   font-size: 14px;
   color: gray;
   font-style: italic;
-}
-.total {
-  font-size: 20px;
 }
 @media (max-width: 667px) {
   .order-card {

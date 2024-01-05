@@ -5,7 +5,7 @@
         <el-statistic :value="dailySales" :precision="2" :formatter="formatCurrency">
           <template #title>
             <div style="display: inline-flex; align-items: center">
-              Valor de vendas diário
+              Valor de vendas no dia {{ currentDate }}
             </div>
           </template>
         </el-statistic>
@@ -16,7 +16,7 @@
         <el-statistic :value="monthlySales" :precision="2" :formatter="formatCurrency">
           <template #title>
             <div style="display: inline-flex; align-items: center">
-              Valor de vendas mensal
+              Valor de vendas no mês de {{ currentMonthAndYear }}
             </div>
           </template>
         </el-statistic>
@@ -27,7 +27,7 @@
         <el-statistic :value="monthlyOrderCount">
           <template #title>
             <div style="display: inline-flex; align-items: center">
-              Quantidade de pedidos mensal
+              Quantidade de pedidos no mês de {{ currentMonthAndYear }}
             </div>
           </template>
         </el-statistic>
@@ -51,6 +51,8 @@ import URL from '../../../config/apiConfig';
 const authStore = useAuthStore();
 const token = authStore.user.authentication_token;
 const unitId = authStore.user.unit_id;
+const currentDate = ref("");
+const currentMonthAndYear = ref("");
 
 const headers = {
   Authorization: `Bearer ${token}`
@@ -112,6 +114,10 @@ onMounted(() => {
         calculateDailySales(response.data);
         calculateMonthlySales(response.data);
         calculateMonthlyOrderCount(response.data);
+        const today = new Date();
+        currentDate.value = today.toLocaleDateString('pt-BR');
+        currentMonthAndYear.value = `${today.toLocaleString('pt-BR', { month: 'long' })}/${today.getFullYear()}`;
+        currentMonthAndYear.value = currentMonthAndYear.value.charAt(0).toUpperCase() + currentMonthAndYear.value.slice(1);
       } else {
         ElMessage({
           showClose: true,

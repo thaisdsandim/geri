@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div class="mt-20 orders">
+    <div>
+      <el-date-picker v-model="selectedDate" type="date" placeholder="Selecione a data" @change="loadOrders" format="DD/MM/YYYY"></el-date-picker>
+    </div>
     <div class="card-container">
       <el-card v-for="order in dailySales" :key="order.id" class="order-card" shadow="never">
         <template #header>
@@ -32,7 +35,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { ElCard, ElMessage } from 'element-plus';
+import { ElCard, ElMessage, ElDatePicker } from 'element-plus';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
@@ -48,6 +51,9 @@ const headers = {
 const url = `${URL}/units/${unitId}/orders/list_orders`;
 
 const dailySales = ref(0);
+const dateISO = new Date();
+dateISO.setUTCHours(dateISO.getUTCHours() - 4);
+const selectedDate = ref(dateISO.toISOString().split('T')[0]);
 
 const formatDeliveryTime = (deliveryHour) => {
   const date = new Date(deliveryHour);
@@ -61,21 +67,20 @@ const formatCurrency = (value) => {
 };
 
 const filterDailySales = (orders) => {
-  const today = new Date();
-  today.setUTCHours(today.getUTCHours() - 4);
-  const todayISOString = today.toISOString().split('T')[0];
-  
-  const dailySalesSum = orders
-    .filter(order => order.delivery_date === todayISOString)
+  const selectedDateISO = new Date(selectedDate.value).toISOString().split('T')[0];
+  const dailySalesSum = orders.filter(order => {
+    const orderDateISO = new Date(order.delivery_date).toISOString().split('T')[0];
+    return orderDateISO === selectedDateISO;
+  });
   dailySales.value = dailySalesSum;
 };
 
-onMounted(() => {
+const loadOrders = () => {
   axios.get(url, { headers })
     .then(response => {
       if (response.data) {
         filterDailySales(response.data);
-        console.log(dailySales)
+        console.log(response.data);
       } else {
         ElMessage({
           showClose: true,
@@ -91,10 +96,19 @@ onMounted(() => {
         type: 'error',
       });
     });
+};
+
+onMounted(() => {
+  loadOrders();
 });
 </script>
 
 <style>
+.orders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .card-container {
   display: flex;
   flex-wrap: wrap;

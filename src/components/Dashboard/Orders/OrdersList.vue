@@ -99,7 +99,6 @@ const loadOrders = () => {
     .then(response => {
       if (response.data) {
         filterDailySales(response.data);
-        console.log(response.data);
       } else {
         ElMessage({
           showClose: true,

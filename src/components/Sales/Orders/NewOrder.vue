@@ -28,8 +28,9 @@
         <el-form-item label="Endereço de Entrega">
           <el-input v-model="form.address" :rows="2" type="textarea" placeholder="Digite o endereço de entrega..." />
         </el-form-item>
+        <AddOrderItem />
         <el-form-item>
-          Total do Pedido:
+          Valor Total do Pedido:
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">Enviar</el-button>
@@ -57,6 +58,7 @@ import { format } from 'date-fns';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
+import AddOrderItem from './AddOrderItem.vue';
 
 const authStore = useAuthStore();
 const token = authStore.user.authentication_token;

@@ -1,9 +1,9 @@
 <template>
   <NavBarComponent />
-  <DashboardComponent />
+  <ClientsComponent />
 </template>
 
 <script setup>
-import DashboardComponent from '../components/Dashboard/DashboardComponent.vue';
 import NavBarComponent from '../components/NavBarComponent.vue'
+import ClientsComponent from '../components/Sales/ClientsComponent.vue';
 </script>

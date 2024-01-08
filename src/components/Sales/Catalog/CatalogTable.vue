@@ -1,11 +1,11 @@
 <template>
-  <el-table :data="formattedTableData" border style="width: 100%" class="catalog">
+  <el-table :data="formattedTableData" border style="width: 100%" class="catalog-table">
     <el-table-column prop="category" label="Categoria" sortable />
     <el-table-column prop="flavour" label="Tipo" sortable />
     <el-table-column prop="value" label="Valor" sortable :formatter="formatCurrency" />
     <el-table-column fixed="right" label="Ações">
       <template #header>
-        <el-input v-model="search" size="small" placeholder="Digite para pesquisar..." />
+        <el-input v-model="search" size="small" placeholder="Digite para pesquisar um produto..." />
       </template>
       <template #default>
         <EditCatalog />
@@ -82,7 +82,7 @@ watch(() => search.value, handleSearch);
 </script>
 
 <style>
-.catalog {
+.catalog-table {
   margin: 20px 0px;
 }
 </style>

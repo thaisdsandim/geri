@@ -1,9 +1,12 @@
 <template>
   <NavBarComponent />
-  <DashboardComponent />
+  <CatalogComponent />
 </template>
 
 <script setup>
-import DashboardComponent from '../components/Dashboard/DashboardComponent.vue';
 import NavBarComponent from '../components/NavBarComponent.vue'
+import CatalogComponent from '../components/Sales/CatalogComponent.vue';
 </script>
+
+<style>
+</style>

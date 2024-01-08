@@ -28,13 +28,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Quantidade">
-          <el-input-number v-model="form.quantity" :precision="3" :step="0.1" />
+          <el-input-number
+            v-model="form.quantity"
+            :precision="form.productType === 'Bolo' ? 3 : 0"
+            :step="form.productType === 'Bolo' ? 0.1 : 1"
+            @change="calculateTotalValue"
+          />
         </el-form-item>
         <el-form-item label="Observações">
           <el-input v-model="form.comments" :rows="2" type="textarea" placeholder="Digite suas observações sobre o item..." />
         </el-form-item>
         <el-form-item>
-          Valor Total do Item: 
+          Valor Total do Item: {{ form.totalValue }}
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">Enviar</el-button>
@@ -47,7 +52,7 @@
 
 <script setup>
 import { onMounted, ref, reactive, watch } from 'vue';
-import { ElMessage, ElSelect, ElOption, ElButton, ElDialog, ElForm, ElFormItem, ElInput } from 'element-plus';
+import { ElMessage, ElSelect, ElOption, ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElInputNumber } from 'element-plus';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
@@ -66,12 +71,14 @@ const dialogVisible = ref(false);
 const categoryOptions = ref([]);
 const flavourOptions = ref([]);
 const filteredFlavourOptions = ref([]);
+const products = ref([]);
 
 const form = reactive({
   category: '',
   flavour: '',
   quantity: 0,
   comments: '',
+  totalValue: 0,
 });
 
 const toggleDialog = () => {
@@ -83,6 +90,7 @@ const resetForm = () => {
   form.flavour = '';
   form.quantity = 0;
   form.comments = '';
+  form.totalValue = 0;
 };
 
 const onSubmit = () => {
@@ -91,18 +99,31 @@ const onSubmit = () => {
 };
 
 const updateFlavourOptions = () => {
+  if (form.category) {
+    form.flavour = '';
+    form.quantity = 0;
+    form.comments = '';
+    form.totalValue = 0;
+  }
+
   filteredFlavourOptions.value = flavourOptions.value.filter(flavour => flavour.category === form.category);
+};
+
+const calculateTotalValue = () => {
+  const selectedProduct = products.value.find(product => product.flavour === form.flavour);
+  const totalValue = selectedProduct ? form.quantity * selectedProduct.value : 0;
+
+  form.totalValue = totalValue;
 };
 
 onMounted(() => {
   axios.get(url, { headers })
     .then(response => {
       if (response.data) {
-        console.log(response.data);
-        const products = response.data;
-        const uniqueCategories = [...new Set(products.map(product => product.category))];
+        products.value = response.data;
+        const uniqueCategories = [...new Set(products.value.map(product => product.category))];
         categoryOptions.value = uniqueCategories.map(category => ({ label: category, value: category }));
-        flavourOptions.value = products.map(product => ({ label: product.flavour, value: product.flavour, category: product.category }));
+        flavourOptions.value = products.value.map(product => ({ label: product.flavour, value: product.flavour, category: product.category }));
       } else {
         ElMessage({
           showClose: true,

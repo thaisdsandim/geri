@@ -152,7 +152,9 @@ const updateFlavourOptions = () => {
 };
 
 const calculateTotalValue = () => {
-  const selectedProduct = products.value.find(product => product.flavour === form.flavour);
+  const selectedProduct = products.value.find(product => 
+    product.flavour === form.flavour && product.category === form.category
+  );
 
   if (form.category === 'Docinhos') {
     const centQuantity = form.quantity / 100;

@@ -79,7 +79,6 @@ const submitForm = (templateParams) => {
 
   emailjs.send(serviceId, templateId, templateParams, userId)
     .then(response => {
-      console.log(response);
       ElMessage({
         showClose: true,
         message: 'Cadastro enviado com sucesso!',
@@ -88,7 +87,6 @@ const submitForm = (templateParams) => {
       isRegisterVisible.value = false;
     })
     .catch(error => {
-      console.error(error);
       ElMessage({
         showClose: true,
         message: 'Erro ao enviar cadastro!',

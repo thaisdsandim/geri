@@ -58,7 +58,6 @@ onMounted(() => {
   axios.get(url, { headers })
     .then(response => {
       if (response.data) {
-        console.log(response.data);
         tableData.value = response.data;
         formattedTableData.value = response.data;
       } else {

@@ -77,13 +77,13 @@ const calculateDailySales = (orders) => {
 
 const calculateMonthlySales = (orders) => {
   const today = new Date();
-  const currentMonth = today.getMonth() + 1;
-  const currentYear = today.getFullYear();
+  const currentMonth = today.getUTCMonth();
+  const currentYear = today.getUTCFullYear();
 
   const monthlySalesSum = orders
     .filter(order => {
       const orderDate = new Date(order.delivery_date);
-      return orderDate.getMonth() + 1 === currentMonth && orderDate.getFullYear() === currentYear;
+      return orderDate.getUTCMonth() === currentMonth && orderDate.getUTCFullYear() === currentYear;
     })
     .reduce((sum, order) => sum + order.amount, 0);
   monthlySales.value = monthlySalesSum;
@@ -91,13 +91,13 @@ const calculateMonthlySales = (orders) => {
 
 const calculateMonthlyOrderCount = (orders) => {
   const today = new Date();
-  const currentMonth = today.getMonth() + 1;
-  const currentYear = today.getFullYear();
+  const currentMonth = today.getUTCMonth();
+  const currentYear = today.getUTCFullYear();
 
   const monthlyOrderCountValue = orders
     .filter(order => {
       const orderDate = new Date(order.delivery_date);
-      return orderDate.getMonth() + 1 === currentMonth && orderDate.getFullYear() === currentYear;
+      return orderDate.getUTCMonth() === currentMonth && orderDate.getUTCFullYear() === currentYear;
     })
     .length;
   monthlyOrderCount.value = monthlyOrderCountValue;

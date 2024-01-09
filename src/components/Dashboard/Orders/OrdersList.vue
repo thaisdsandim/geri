@@ -20,8 +20,8 @@
             <li v-for="(item, index) in order.items" :key="index" class="itens">
               <p>
                 {{ item.quantity }} 
-                {{ item.category === 'Bolo' ? 'kg' : item.category === 'Docinhos' ? 'un.' : '' }}
-                de {{ item.category }} de {{ item.flavour }}
+                {{ item.category === 'Bolo' ? 'kg' : 'un.' }}
+                de {{ item.category }} {{ item.category === 'Outros' ? '' : 'sabor' }} {{ item.flavour }}
               </p>
               <p class="comments">{{ item.comments }}</p>
             </li>
@@ -140,7 +140,7 @@ onMounted(() => {
   justify-content: space-around;
 }
 .order-card {
-  min-width: 32%;
+  width: 31vw;
   margin: 10px 0 10px 0;
   border-style: none;
   box-sizing: border-box;

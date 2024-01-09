@@ -64,7 +64,7 @@ onMounted(() => {
       } else {
         ElMessage({
           showClose: true,
-          message: response,
+          message: 'Não foi possível carregar os produtos!',
           type: 'error',
         });
       }
@@ -72,7 +72,7 @@ onMounted(() => {
     .catch(error => {
       ElMessage({
         showClose: true,
-        message: error,
+        message: 'Não foi possível carregar os produtos!',
         type: 'error',
       });
     });

@@ -106,7 +106,7 @@ const loadOrders = () => {
       } else {
         ElMessage({
           showClose: true,
-          message: response,
+          message: 'Não foi possível carregar os pedidos!',
           type: 'error',
         });
       }
@@ -114,7 +114,7 @@ const loadOrders = () => {
     .catch(error => {
       ElMessage({
         showClose: true,
-        message: error,
+        message: 'Não foi possível carregar os pedidos!',
         type: 'error',
       });
     });

@@ -28,24 +28,35 @@
         <el-form-item label="Endereço de Entrega">
           <el-input v-model="form.address" :rows="2" type="textarea" placeholder="Digite o endereço de entrega..." />
         </el-form-item>
-        <AddOrderItem />
+        <AddOrderItem @submit="handleItemSubmit"/>
         <el-card class="box-card" shadow="never">
-          <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div>
+          <div>
+            <ul>
+            <li class="itens" v-for="(item, index) in orderItems" :key="index">
+              <p>
+                {{ item.quantity }} 
+                {{ item.category === 'Bolo' ? 'kg' : 'un.' }}
+                de {{ item.category }} {{ item.category === 'Outros' ? '' : 'sabor' }} {{ item.flavour }}
+              </p>
+              <p class="comments">{{ item.comments }}</p>
+            </li>
+          </ul>
+          </div>
         </el-card>
         <el-form-item>
-          Valor Total do Pedido:
+          <b class="subtotal">Valor Total do Pedido: {{ formatCurrency(form.amount) }}</b>
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">Fechar</el-button>
-        <el-button type="primary" @click="onSubmit">Enviar</el-button>
+        <el-button type="primary" @click="onSubmit">Salvar</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, watch } from 'vue';
 import { ElMessage,
          ElSelect,
          ElOption,
@@ -55,7 +66,9 @@ import { ElMessage,
          ElFormItem,
          ElInput,
          ElDatePicker,
-         ElTimePicker
+         ElTimePicker,
+         ElCard,
+         ElLoading
 } from 'element-plus';
 import { format } from 'date-fns';
 import axios from 'axios';
@@ -75,30 +88,93 @@ const url = `${URL}/units/${unitId}/costumers`;
 
 const dialogVisible = ref(false);
 let options = [];
+const orderItems = ref([]);
+
 const form = reactive({
   client: '',
   date: '',
   hour: '',
   address: '',
+  itens: orderItems,
+  amount: 0,
 });
+
+const resetForm = () => {
+  form.client = '';
+  form.date = '';
+  form.hour = '';
+  form.address = '';
+  form.itens = [];
+  form.amount = 0;
+};
 
 const toggleDialog = () => {
   dialogVisible.value = !dialogVisible.value;
 };
 
-const onSubmit = () => {
-  const formattedDate = format(new Date(form.date), 'yyyy-MM-dd');
-  const formattedTime = format(form.hour, 'HH:mm');
-  const dateTimeString = `2000-01-01T${formattedTime}:00.000Z`;
-
-  console.log('Formatted Date:', formattedDate);
-  console.log('Formatted Time:', dateTimeString);
-
-  console.log('Form Data:', form);
-  dialogVisible.value = false;
+const formatCurrency = (value) => {
+  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
+const handleItemSubmit = (item) => {
+  orderItems.value.push({ ...item });
+  form.amount = orderItems.value.reduce((total, item) => {
+    return total + (item.totalValue || 0);
+  }, 0);
+};
 
+const onSubmit = async () => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Salvando pedido...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+
+  try {
+    const formattedDate = format(new Date(form.date), 'yyyy-MM-dd');
+    const formattedTime = format(form.hour, 'HH:mm');
+    const delivery_hour = `2000-01-01T${formattedTime}:00.000Z`;
+
+    const orderData = {
+      delivery_date: formattedDate,
+      delivery_hour: delivery_hour,
+      delivery_place: form.address,
+      amount: form.amount,
+      costumer_id: form.client,
+      unit_id: unitId,
+    };
+
+    const orderResponse = await axios.post(`${URL}/units/${unitId}/orders`, orderData, { headers });
+    const orderId = orderResponse.data.id;
+
+    await Promise.all(orderItems.value.map(async (item) => {
+      const itemData = {
+        category: item.category,
+        flavour: item.flavour,
+        comments: item.comments,
+        quantity: item.quantity,
+        amount: item.totalValue,
+        order_id: orderId,
+      };
+
+      await axios.post(`${URL}/units/${unitId}/orders/${orderId}/items`, itemData, { headers });
+    }));
+    window.location.reload();
+    dialogVisible.value = false;
+    loading.close();
+    ElMessage({
+      showClose: true,
+      message: 'Pedido salvo com sucesso!',
+      type: 'success',
+    });
+  } catch (error) {
+    ElMessage({
+      showClose: true,
+      message: 'Erro ao salvar pedido!',
+      type: 'error',
+    });
+  }
+};
 
 onMounted(() => {
   axios.get(url, { headers })
@@ -124,6 +200,12 @@ onMounted(() => {
       });
     });
 });
+
+watch(() => dialogVisible.value, (newVisibility) => {
+  if (newVisibility) {
+    resetForm();
+  }
+});
 </script>
 
 <style scoped>
@@ -135,5 +217,22 @@ onMounted(() => {
   bottom: 20px;
   right: 20px;
   padding-bottom: 15px;
+}
+.box-card {
+  border-style: none;
+  margin: 15px 0px 10px 0px;
+}
+.subtotal {
+  font-size: 16px;
+}
+
+.itens {
+  list-style: none;
+}
+
+.comments {
+  font-size: 14px;
+  color: gray;
+  font-style: italic;
 }
 </style>

@@ -121,7 +121,7 @@ onMounted(() => {
       } else {
         ElMessage({
           showClose: true,
-          message: response,
+          message: 'Não foi possível carregar os dados!',
           type: 'error',
         });
       }
@@ -129,7 +129,7 @@ onMounted(() => {
     .catch(error => {
       ElMessage({
         showClose: true,
-        message: error,
+        message: 'Não foi possível carregar os dados!',
         type: 'error',
       });
     });

@@ -44,7 +44,7 @@
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">Fechar</el-button>
-        <el-button type="primary" @click="onSubmit">Enviar</el-button>
+        <el-button type="primary" @click="onSubmit">Salvar</el-button>
       </template>
     </el-dialog>
   </div>
@@ -72,6 +72,7 @@ const categoryOptions = ref([]);
 const flavourOptions = ref([]);
 const filteredFlavourOptions = ref([]);
 const products = ref([]);
+const emit = defineEmits(['submit']);
 
 const form = reactive({
   category: '',
@@ -96,12 +97,18 @@ const toggleDialog = () => {
 const onSubmit = () => {
   const loading = ElLoading.service({
     lock: true,
-    text: 'Adicionando item...',
+    text: 'Salvando item...',
     background: 'rgba(0, 0, 0, 0.7)',
   })
-  console.log('Form Data:', form);
+  const formDataCopy = { ...form };
   dialogVisible.value = false;
-  loading.close()
+  emit('submit', formDataCopy);
+  loading.close();
+  ElMessage({
+    showClose: true,
+    message: 'Item adicionado com sucesso!',
+    type: 'success',
+  });
 };
 
 const updateFlavourOptions = () => {
@@ -170,7 +177,7 @@ watch(() => form.category, () => {
 });
 
 watch(() => dialogVisible.value, (newVisibility) => {
-  if (!newVisibility) {
+  if (newVisibility) {
     resetForm();
   }
 })

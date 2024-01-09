@@ -7,7 +7,7 @@
 
     <el-dialog v-model="dialogVisible" title="Adicionar Item no Pedido" center>
       <el-form :model="form" label-width="auto" class="mt-20">
-        <el-form-item label="Categoria">
+        <el-form-item label="Categoria*">
           <el-select v-model="form.category" filterable placeholder="Selecione uma categoria..." @change="updateFlavourOptions">
             <el-option
               v-for="category in categoryOptions"
@@ -17,7 +17,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Tipo">
+        <el-form-item label="Tipo*">
           <el-select v-model="form.flavour" filterable placeholder="Selecione um tipo...">
             <el-option
               v-for="flavour in filteredFlavourOptions"
@@ -27,7 +27,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Quantidade">
+        <el-form-item label="Quantidade*">
           <el-input-number
             v-model="form.quantity"
             :precision="getPrecision(form.category)"
@@ -95,12 +95,41 @@ const toggleDialog = () => {
 };
 
 const onSubmit = () => {
+  if (!form.category) {
+    ElMessage({
+      showClose: true,
+      message: 'Por favor, preencha a categoria!',
+      type: 'warning',
+    });
+    return;
+  };
+
+  if (!form.flavour) {
+    ElMessage({
+      showClose: true,
+      message: 'Por favor, preencha o tipo!',
+      type: 'warning',
+    });
+    return;
+  };
+
+  if (!form.quantity) {
+    ElMessage({
+      showClose: true,
+      message: 'Por favor, preencha a quantidade!',
+      type: 'warning',
+    });
+    return;
+  };
+
   const loading = ElLoading.service({
     lock: true,
     text: 'Salvando item...',
     background: 'rgba(0, 0, 0, 0.7)',
   })
+
   const formDataCopy = { ...form };
+
   dialogVisible.value = false;
   emit('submit', formDataCopy);
   loading.close();

@@ -9,7 +9,7 @@
 
     <el-dialog v-model="dialogVisible" title="Adicionar Pedido" center>
       <el-form :model="form" label-width="auto" class="mt-20">
-        <el-form-item label="Cliente">
+        <el-form-item label="Cliente*">
           <el-select v-model="form.client" filterable placeholder="Selecione um cliente...">
             <el-option
               v-for="client in options"
@@ -19,10 +19,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Data de Entrega">
+        <el-form-item label="Data de Entrega*">
           <el-date-picker v-model="form.date" type="date" placeholder="Selecione a data de entrega..." format="DD/MM/YYYY"></el-date-picker>
         </el-form-item>
-        <el-form-item label="Hora de Entrega">
+        <el-form-item label="Hora de Entrega*">
           <el-time-picker v-model="form.hour" placeholder="Selecione a hora de entrega..." format="HH:mm"></el-time-picker>
         </el-form-item>
         <el-form-item label="Endereço de Entrega">
@@ -124,13 +124,49 @@ const handleItemSubmit = (item) => {
 };
 
 const onSubmit = async () => {
-  const loading = ElLoading.service({
-    lock: true,
-    text: 'Salvando pedido...',
-    background: 'rgba(0, 0, 0, 0.7)',
-  })
-
   try {
+    if (!form.client) {
+      ElMessage({
+        showClose: true,
+        message: 'Por favor, preencha o cliente!',
+        type: 'warning',
+      });
+      return;
+    };
+
+    if (!form.date) {
+      ElMessage({
+        showClose: true,
+        message: 'Por favor, preencha a data de entrega!',
+        type: 'warning',
+      });
+      return;
+    };
+
+    if (!form.hour) {
+      ElMessage({
+        showClose: true,
+        message: 'Por favor, preencha a hora de entrega!',
+        type: 'warning',
+      });
+      return;
+    };
+
+    if (orderItems.value.length === 0) {
+      ElMessage({
+        showClose: true,
+        message: 'Por favor, adicione pelo menos um item no pedido!',
+        type: 'warning',
+      });
+      return;
+    };
+
+    const loading = ElLoading.service({
+      lock: true,
+      text: 'Salvando pedido...',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
+
     const formattedDate = format(new Date(form.date), 'yyyy-MM-dd');
     const formattedTime = format(form.hour, 'HH:mm');
     const delivery_hour = `2000-01-01T${formattedTime}:00.000Z`;

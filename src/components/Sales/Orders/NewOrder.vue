@@ -32,15 +32,15 @@
         <el-card class="box-card" shadow="never">
           <div>
             <ul>
-            <li class="itens" v-for="(item, index) in orderItems" :key="index">
-              <p>
-                {{ item.quantity }} 
-                {{ item.category === 'Bolo' ? 'kg' : 'un.' }}
-                de {{ item.category }} {{ item.category === 'Outros' ? '' : 'sabor' }} {{ item.flavour }}
-              </p>
-              <p class="comments">{{ item.comments }}</p>
-            </li>
-          </ul>
+              <li class="itens" v-for="(item, index) in orderItems" :key="index">
+                <p>
+                  {{ item.quantity }} 
+                  {{ item.category === 'Bolo' ? 'kg' : 'un.' }}
+                  de {{ item.category }} {{ item.category === 'Outros' ? '' : 'sabor' }} {{ item.flavour }}
+                </p>
+                <p class="comments">{{ item.comments }}</p>
+              </li>
+            </ul>
           </div>
         </el-card>
         <el-form-item>

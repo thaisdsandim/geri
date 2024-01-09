@@ -7,8 +7,8 @@
       class="floating-button"
     >+</el-button>
 
-    <el-dialog v-model="dialogVisible" title="Adicionar Pedido">
-      <el-form :model="form">
+    <el-dialog v-model="dialogVisible" title="Adicionar Pedido" center>
+      <el-form :model="form" label-width="auto" class="mt-20">
         <el-form-item label="Cliente">
           <el-select v-model="form.client" filterable placeholder="Selecione um cliente...">
             <el-option
@@ -29,14 +29,17 @@
           <el-input v-model="form.address" :rows="2" type="textarea" placeholder="Digite o endereço de entrega..." />
         </el-form-item>
         <AddOrderItem />
+        <el-card class="box-card" shadow="never">
+          <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div>
+        </el-card>
         <el-form-item>
           Valor Total do Pedido:
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">Enviar</el-button>
-          <el-button @click="dialogVisible = false">Fechar</el-button>
-        </el-form-item>
       </el-form>
+      <template #footer>
+        <el-button @click="dialogVisible = false">Fechar</el-button>
+        <el-button type="primary" @click="onSubmit">Enviar</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>

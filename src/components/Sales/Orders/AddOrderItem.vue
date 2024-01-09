@@ -5,8 +5,8 @@
       @click="toggleDialog"
     >Adicionar Item</el-button>
 
-    <el-dialog v-model="dialogVisible" title="Adicionar Item no Pedido">
-      <el-form :model="form">
+    <el-dialog v-model="dialogVisible" title="Adicionar Item no Pedido" center>
+      <el-form :model="form" label-width="auto" class="mt-20">
         <el-form-item label="Categoria">
           <el-select v-model="form.category" filterable placeholder="Selecione uma categoria..." @change="updateFlavourOptions">
             <el-option
@@ -30,8 +30,8 @@
         <el-form-item label="Quantidade">
           <el-input-number
             v-model="form.quantity"
-            :precision="form.productType === 'Bolo' ? 3 : 0"
-            :step="form.productType === 'Bolo' ? 0.1 : 1"
+            :precision="getPrecision(form.category)"
+            :step="getStep(form.category)"
             @change="calculateTotalValue"
           />
         </el-form-item>
@@ -39,20 +39,20 @@
           <el-input v-model="form.comments" :rows="2" type="textarea" placeholder="Digite suas observações sobre o item..." />
         </el-form-item>
         <el-form-item>
-          Valor Total do Item: {{ form.totalValue }}
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">Enviar</el-button>
-          <el-button @click="dialogVisible = false">Fechar</el-button>
+          <b>Valor Total do Item: {{ formatCurrency(form.totalValue) }}</b>
         </el-form-item>
       </el-form>
+      <template #footer>
+        <el-button @click="dialogVisible = false">Fechar</el-button>
+        <el-button type="primary" @click="onSubmit">Enviar</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref, reactive, watch } from 'vue';
-import { ElMessage, ElSelect, ElOption, ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElInputNumber } from 'element-plus';
+import { ElMessage, ElSelect, ElOption, ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElInputNumber, ElLoading } from 'element-plus';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
@@ -81,10 +81,6 @@ const form = reactive({
   totalValue: 0,
 });
 
-const toggleDialog = () => {
-  dialogVisible.value = !dialogVisible.value;
-};
-
 const resetForm = () => {
   form.category = '';
   form.flavour = '';
@@ -93,9 +89,19 @@ const resetForm = () => {
   form.totalValue = 0;
 };
 
+const toggleDialog = () => {
+  dialogVisible.value = !dialogVisible.value;
+};
+
 const onSubmit = () => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Adicionando item...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
   console.log('Form Data:', form);
   dialogVisible.value = false;
+  loading.close()
 };
 
 const updateFlavourOptions = () => {
@@ -111,9 +117,27 @@ const updateFlavourOptions = () => {
 
 const calculateTotalValue = () => {
   const selectedProduct = products.value.find(product => product.flavour === form.flavour);
-  const totalValue = selectedProduct ? form.quantity * selectedProduct.value : 0;
 
-  form.totalValue = totalValue;
+  if (form.category === 'Docinhos') {
+    const centQuantity = form.quantity / 100;
+    const totalValue = selectedProduct ? centQuantity * selectedProduct.value : 0;
+    form.totalValue = totalValue;
+  } else {
+    const totalValue = selectedProduct ? form.quantity * selectedProduct.value : 0;
+    form.totalValue = totalValue;
+  }
+};
+
+const formatCurrency = (value) => {
+  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
+
+const getPrecision = (category) => {
+  return category === 'Bolo' ? 3 : 0;
+};
+
+const getStep = (category) => {
+  return category === 'Bolo' ? 0.1 : 1;
 };
 
 onMounted(() => {

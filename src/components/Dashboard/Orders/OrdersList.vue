@@ -141,7 +141,7 @@ onMounted(() => {
 }
 .order-card {
   width: 31vw;
-  margin: 10px 0 10px 0;
+  margin: 10px;
   border-style: none;
   box-sizing: border-box;
   align-items: center;

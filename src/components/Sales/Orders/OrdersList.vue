@@ -101,12 +101,16 @@ const loadOrders = () => {
   axios.get(url, { headers })
     .then(response => {
       if (response.data) {
-        response.data.sort((a, b) => new Date(b.delivery_date) - new Date(a.delivery_date));
+        response.data.sort((a, b) => {
+          const dateComparison = new Date(b.delivery_date) - new Date(a.delivery_date);
+          return dateComparison !== 0 ? dateComparison : b.id - a.id;
+        });
+
         filterDailySales(response.data);
       } else {
         ElMessage({
           showClose: true,
-          message: 'Não foi possível carregar os pedidos!',
+          message: 'Não foi possível carregar os pedidos!',
           type: 'error',
         });
       }
@@ -114,7 +118,7 @@ const loadOrders = () => {
     .catch(error => {
       ElMessage({
         showClose: true,
-        message: 'Não foi possível carregar os pedidos!',
+        message: 'Não foi possível carregar os pedidos!',
         type: 'error',
       });
     });
@@ -145,7 +149,7 @@ onMounted(() => {
 }
 .order-card {
   width: 31vw;
-  margin: 10px 0 10px 0;
+  margin: 10px;
   border-style: none;
   box-sizing: border-box;
   align-items: center;

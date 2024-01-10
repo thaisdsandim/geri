@@ -45,12 +45,9 @@ const filterClientsByName = () => {
 };
 
 const filterClients = (costumers) => {
-  const filteredClients = costumers.filter(costumers => {
-
-    const customerCondition = costumers.name.toLowerCase().includes(customerFilter.value.toLowerCase());
-
-    return customerCondition;
-  });
+  const filteredClients = costumers
+    .filter(costumer => costumer.name.toLowerCase().includes(customerFilter.value.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   clients.value = filteredClients;
 };

@@ -184,8 +184,12 @@ onMounted(() => {
       if (response.data) {
         products.value = response.data;
         const uniqueCategories = [...new Set(products.value.map(product => product.category))];
-        categoryOptions.value = uniqueCategories.map(category => ({ label: category, value: category }));
-        flavourOptions.value = products.value.map(product => ({ label: product.flavour, value: product.flavour, category: product.category }));
+        categoryOptions.value = uniqueCategories
+          .map(category => ({ label: category, value: category }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+        flavourOptions.value = products.value
+          .map(product => ({ label: product.flavour, value: product.flavour, category: product.category }))
+          .sort((a, b) => a.label.localeCompare(b.label));
       } else {
         ElMessage({
           showClose: true,

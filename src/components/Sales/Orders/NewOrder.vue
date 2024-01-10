@@ -220,6 +220,8 @@ onMounted(() => {
           value: client.id,
           label: client.name,
         }));
+
+        options.sort((a, b) => a.label.localeCompare(b.label));
       } else {
         ElMessage({
           showClose: true,

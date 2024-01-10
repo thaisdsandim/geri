@@ -1,5 +1,11 @@
 <template>
-  <el-button type="primary" @click="dialogVisible = true" class="mt-10">Editar</el-button>
+  <el-tooltip
+    effect="light"
+    content="Editar cliente"
+    placement="bottom-end"
+  >
+    <el-button :icon="Edit" type="primary" @click="dialogVisible = true" class="mt-20 edit-button" circle></el-button>
+  </el-tooltip>
 
   <el-dialog v-model="dialogVisible" title="Editar Cliente" center>
     <el-form :model="editedClient" label-width="auto" class="mt-20">
@@ -19,7 +25,8 @@
 
 <script setup>
 import { ref, defineProps, watch } from 'vue';
-import { ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElMessage, ElLoading } from 'element-plus';
+import { ElButton, ElDialog, ElForm, ElFormItem, ElInput, ElMessage, ElLoading, ElTooltip } from 'element-plus';
+import { Edit } from '@element-plus/icons-vue';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
@@ -127,3 +134,9 @@ watch(() => dialogVisible.value, (newVisibility) => {
   }
 });
 </script>
+
+<style>
+.edit-button {
+  margin-right: 10px;
+}
+</style>

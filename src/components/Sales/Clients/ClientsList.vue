@@ -5,11 +5,14 @@
     </div>
     <div class="card-container mt-10">
       <el-card v-for="client in clients" :key="client.id" class="client-card" shadow="never">
-        <div>
+        <div class="client-header">
           <b>{{ client.name.toUpperCase() }}</b>
           <p class="mt-10">{{ client.phone }}</p>
         </div>
-        <EditClient :client=" {...client} " />
+        <div class="client-footer">
+          <EditClient :client=" {...client} " />
+          <NewOrderByClient :client=" {...client} "/>
+        </div>
       </el-card>
     </div>
   </div>
@@ -22,6 +25,7 @@ import axios from 'axios';
 import EditClient from './EditClient.vue';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
+import NewOrderByClient from './NewOrderByClient.vue';
 
 const authStore = useAuthStore();
 const token = authStore.user.authentication_token;
@@ -102,6 +106,12 @@ onMounted(() => {
   border-style: none;
   box-sizing: border-box;
   align-items: center;
+}
+.client-header {
+  flex-wrap: wrap;
+}
+.client-footer {
+  display: flex;
   flex-wrap: wrap;
 }
 .mt-10 {

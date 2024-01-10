@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { useAuthStore } from '../../../stores/store';
 import {
   ElRow,
@@ -45,6 +45,7 @@ import {
   ElStatistic,
   ElMessage
 } from 'element-plus';
+import { format, parseISO } from 'date-fns';
 import axios from 'axios';
 import URL from '../../../config/apiConfig';
 
@@ -64,16 +65,8 @@ const dailySales = ref(0);
 const monthlySales = ref(0);
 const monthlyOrderCount = ref(0);
 
-const calculateDailySales = (orders) => {
-  const today = new Date();
-  today.setUTCHours(today.getUTCHours() - 4);
-  const todayISOString = today.toISOString().split('T')[0];
-  
-  const dailySalesSum = orders
-    .filter(order => order.delivery_date === todayISOString)
-    .reduce((sum, order) => sum + order.amount, 0);
-  dailySales.value = dailySalesSum;
-};
+const props = defineProps(['date']);
+const selectedDate = ref(props.date);
 
 const calculateMonthlySales = (orders) => {
   const today = new Date();
@@ -107,32 +100,67 @@ const formatCurrency = (value) => {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
-onMounted(() => {
-  axios.get(url, { headers })
-    .then(response => {
-      if (response.data) {
-        calculateDailySales(response.data);
-        calculateMonthlySales(response.data);
-        calculateMonthlyOrderCount(response.data);
-        const today = new Date();
-        currentDate.value = today.toLocaleDateString('pt-BR');
-        currentMonthAndYear.value = `${today.toLocaleString('pt-BR', { month: 'long' })}/${today.getFullYear()}`;
-        currentMonthAndYear.value = currentMonthAndYear.value.charAt(0).toUpperCase() + currentMonthAndYear.value.slice(1);
-      } else {
-        ElMessage({
-          showClose: true,
-          message: 'Não foi possível carregar os dados!',
-          type: 'error',
-        });
-      }
-    })
-    .catch(error => {
+const calculateSales = async () => {
+  try {
+    const response = await axios.get(url, { headers });
+    if (response.data) {
+      const dailySalesSum = response.data
+        .filter(order => order.delivery_date === selectedDate.value)
+        .reduce((sum, order) => sum + order.amount, 0);
+      dailySales.value = dailySalesSum;
+
+      calculateMonthlySales(response.data);
+      calculateMonthlyOrderCount(response.data);
+      const today = new Date();
+      currentMonthAndYear.value = `${today.toLocaleString('pt-BR', { month: 'long' })}/${today.getFullYear()}`;
+      currentMonthAndYear.value = currentMonthAndYear.value.charAt(0).toUpperCase() + currentMonthAndYear.value.slice(1);
+    } else {
       ElMessage({
         showClose: true,
-        message: 'Não foi possível carregar os dados!',
+        message: 'Não foi possível carregar os dados!',
         type: 'error',
       });
+    }
+  } catch (error) {
+    ElMessage({
+      showClose: true,
+      message: 'Não foi possível carregar os dados!',
+      type: 'error',
     });
+  }
+};
+
+watch(() => {
+  const inputDate = props.date;
+
+  const isAlreadyFormatted = /^\d{4}-\d{2}-\d{2}$/.test(inputDate);
+
+  if (!isAlreadyFormatted) {
+    const dateObject = new Date(inputDate);
+    const year = dateObject.getFullYear();
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObject.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    const formattedCurrentDate = `${day}/${month}/${year}`
+  
+    currentDate.value = formattedCurrentDate;
+    selectedDate.value = formattedDate;
+    
+    calculateSales();
+  } else {
+    const formatDate = (dateString) => {
+      const date = parseISO(dateString);
+      const formattedDate = format(date, 'dd/MM/yyyy', { awareOfUnicodeTokens: true });
+      return formattedDate;
+    };
+
+    const formattedDate = formatDate(inputDate);
+
+    currentDate.value = formattedDate;
+    selectedDate.value = inputDate;
+    
+    calculateSales();
+  }
 });
 </script>
 

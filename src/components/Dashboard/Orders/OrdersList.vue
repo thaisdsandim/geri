@@ -1,4 +1,5 @@
 <template>
+  <PanelOrders :date="selectedDate"/>
   <div class="mt-20 orders">
     <div class="filters">
       <el-date-picker v-model="selectedDate" type="date" placeholder="Selecione a data para filtrar..." @change="loadOrders" format="DD/MM/YYYY"></el-date-picker>
@@ -41,6 +42,7 @@ import { onMounted, ref } from 'vue';
 import { ElCard, ElMessage, ElDatePicker, ElInput } from 'element-plus';
 import { format, parseISO } from 'date-fns';
 import axios from 'axios';
+import PanelOrders from '../Panel/PanelOrders.vue';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
 

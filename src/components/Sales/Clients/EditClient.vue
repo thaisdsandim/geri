@@ -7,7 +7,7 @@
     <el-button :icon="Edit" type="primary" @click="dialogVisible = true" class="mt-20 edit-button" circle></el-button>
   </el-tooltip>
 
-  <el-dialog v-model="dialogVisible" title="Editar Cliente" center>
+  <el-dialog v-model="dialogVisible" title="Editar Cliente" width="95%" center>
     <el-form :model="editedClient" label-width="auto" class="mt-20">
       <el-form-item label="Nome*">
         <el-input v-model="editedClient.name" type="text" placeholder="Digite o nome do cliente..." />

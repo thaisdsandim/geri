@@ -5,7 +5,7 @@
       @click="toggleDialog"
     >Adicionar Item</el-button>
 
-    <el-dialog v-model="dialogVisible" title="Adicionar Item no Pedido" center>
+    <el-dialog v-model="dialogVisible" title="Adicionar Item no Pedido" width="95%" center>
       <el-form :model="form" label-width="auto" class="mt-20">
         <el-form-item label="Categoria*">
           <el-select v-model="form.category" filterable placeholder="Selecione uma categoria..." @change="updateFlavourOptions">

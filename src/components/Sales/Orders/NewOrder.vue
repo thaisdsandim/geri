@@ -7,7 +7,7 @@
       class="floating-button"
     >+</el-button>
 
-    <el-dialog v-model="dialogVisible" title="Adicionar Pedido" center>
+    <el-dialog v-model="dialogVisible" title="Adicionar Pedido" width="95%" center>
       <el-form :model="form" label-width="auto" class="mt-20">
         <el-form-item label="Cliente*">
           <el-select v-model="form.client" filterable placeholder="Selecione um cliente...">

@@ -8,7 +8,7 @@
       <el-button :icon="Plus" type="primary" @click="toggleDialog" class="mt-20 new-button" circle></el-button>
     </el-tooltip>
 
-    <el-dialog v-model="dialogVisible" title="Adicionar Pedido" center>
+    <el-dialog v-model="dialogVisible" title="Adicionar Pedido" width="95%" center>
       <el-form :model="form" label-width="auto" class="mt-20">
         <el-form-item label="Cliente*">
           <el-select v-model="form.selectedClient.id" filterable placeholder="Selecione um cliente...">

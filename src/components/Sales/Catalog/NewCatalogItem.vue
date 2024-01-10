@@ -7,7 +7,7 @@
       class="floating-button"
     >+</el-button>
 
-    <el-dialog v-model="dialogVisible" title="Adicionar Produto" center>
+    <el-dialog v-model="dialogVisible" title="Adicionar Produto" width="95%" center>
       <el-form :model="form" label-width="auto" class="mt-20">
         <el-form-item label="Categoria*">
           <el-select v-model="form.category" filterable placeholder="Selecione uma categoria...">

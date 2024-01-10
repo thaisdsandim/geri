@@ -2,7 +2,7 @@
   <PanelOrders :date="selectedDate"/>
   <div class="mt-20 orders">
     <div class="filters">
-      <el-date-picker v-model="selectedDate" type="date" placeholder="Selecione a data para filtrar..." @change="loadOrders" format="DD/MM/YYYY"></el-date-picker>
+      <el-date-picker v-model="selectedDate" type="date" placeholder="Selecione a data para filtrar..." @change="onDateChange" format="DD/MM/YYYY"></el-date-picker>
       <el-input v-model="customerFilter" placeholder="Digite o nome do cliente para filtrar..." @input="filterOrdersByCustomer" class="name-filter"></el-input>
     </div>
     <div class="card-container mt-10">
@@ -94,6 +94,15 @@ const filterDailySales = (orders) => {
     return dateCondition && customerCondition;
   });
   dailySales.value = filteredOrders;
+};
+
+const onDateChange = () => {
+  if (!selectedDate.value) {
+    const today = new Date();
+    today.setUTCHours(today.getUTCHours() - 4);
+    selectedDate.value = today.toISOString().split('T')[0];
+  }
+  loadOrders();
 };
 
 const loadOrders = () => {

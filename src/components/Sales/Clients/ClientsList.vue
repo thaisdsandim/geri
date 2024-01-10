@@ -5,10 +5,11 @@
     </div>
     <div class="card-container mt-10">
       <el-card v-for="client in clients" :key="client.id" class="client-card" shadow="never">
-        <div class="order-header">
+        <div>
           <b>{{ client.name.toUpperCase() }}</b>
           <p class="mt-10">{{ client.phone }}</p>
         </div>
+        <EditClient :client=" {...client} " />
       </el-card>
     </div>
   </div>
@@ -18,6 +19,7 @@
 import { onMounted, ref } from 'vue';
 import { ElCard, ElMessage, ElInput } from 'element-plus';
 import axios from 'axios';
+import EditClient from './EditClient.vue';
 import URL from '../../../config/apiConfig';
 import { useAuthStore } from '../../../stores/store';
 
@@ -100,6 +102,7 @@ onMounted(() => {
   border-style: none;
   box-sizing: border-box;
   align-items: center;
+  flex-wrap: wrap;
 }
 .mt-10 {
   margin-top: 10px;
